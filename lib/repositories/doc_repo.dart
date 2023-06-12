@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wathaequi/views/res/colors.dart';
 
 import '../models/Paper.dart';
 
@@ -28,7 +29,7 @@ class DocRepo {
 
     try {
       Response response = await dio
-          .get("http://192.168.197.208:7778/document/api/user/documents/$nin");
+          .get("$baseUrl/document/api/user/documents/$nin");
       List<Paper> papers = [];
 
       if (response.statusCode == 200) {
@@ -58,7 +59,7 @@ class DocRepo {
           await getExternalStorageDirectory();
       String filePath = '${dir!.path}/naissance.pdf';
       await dio.download(
-          "http://192.168.197.208:7778/document/api/naissance/user/$nin", filePath);
+          "$baseUrl/document/api/naissance/user/$nin", filePath);
 
       return filePath;
     } catch (e) {

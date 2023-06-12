@@ -1,7 +1,7 @@
 class Post {
   int? idPublication;
   String? content;
-  String? picture;
+  dynamic picture;
   String? adresse;
   String? commune;
   String? wilaya;
@@ -38,21 +38,7 @@ class Post {
     fullNameCitizen = json['fullNameCitizen'];
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['idPublication'] = this.idPublication;
-    data['content'] = this.content;
-    data['picture'] = this.picture;
-    data['adresse'] = this.adresse;
-    data['commune'] = this.commune;
-    data['wilaya'] = this.wilaya;
-    data['datePublication'] = this.datePublication;
-    if (this.reponces != null) {
-      data['reponces'] = this.reponces!.map((v) => v.toJson()).toList();
-    }
-    data['fullNameCitizen'] = this.fullNameCitizen;
-    return data;
-  }
+
 }
 
 class Reponces {
@@ -64,12 +50,5 @@ class Reponces {
   Reponces.fromJson(Map<String, dynamic> json) {
     dateReply = json['dateReply'];
     content = json['content'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['dateReply'] = this.dateReply;
-    data['content'] = this.content;
-    return data;
   }
 }

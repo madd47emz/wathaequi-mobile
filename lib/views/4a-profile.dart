@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wathaequi/models/Citizen.dart';
 import 'package:wathaequi/view_models/profile_vm.dart';
+import 'package:wathaequi/views/2-login.dart';
 
 import 'res/colors.dart';
 
@@ -8,21 +10,25 @@ class Profile extends StatelessWidget {
 
 
   final Citizen citizen;
+  final String phone;
   const Profile({
-    super.key, required this.citizen,
+    super.key, required this.citizen, required this.phone,
   });
 
   @override
   Widget build(BuildContext context) {
 
     final _address = TextEditingController();
-    _address.text="Centre ville 27000, Wilaya de ${citizen.wilaya}, Dayra de ${citizen.dayra}, Commune de ${citizen.commune}.";
+    _address.text="Wilaya de ${citizen.wilaya}, Dayra de ${citizen.dayra}, Commune de ${citizen.commune}.";
     final _email = TextEditingController();
-    _email.text="m.emziane@esi-sba.dz";
     final _phone = TextEditingController();
-    _phone.text="0798800970";
+    _phone.text=phone;
+
     final _password = TextEditingController();
     _password.text=citizen.password;
+
+
+
 
     return SafeArea(
       child: Scaffold(
@@ -44,7 +50,42 @@ class Profile extends StatelessWidget {
                           fontSize: 35),
                     ),
                     IconButton(
-                        onPressed: () {
+                        onPressed: () async{
+
+                          var response = await showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Logout'),
+                                  content: const Text(
+                                      'Do you want to logout?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'Cancel'),
+                                      child: const Text('Cancel',
+                                          style:
+                                          TextStyle(color: Colors.black)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+
+                                          Navigator.pop(context, 'OK'),
+                                      child: const Text(
+                                        'OK',
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ]));
+                          if (response == "OK") {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Login()));
+                          }
+
 
                         },
                         icon: Icon(
@@ -106,13 +147,14 @@ class Profile extends StatelessWidget {
 
 
                   ),
-                  maxLines: 5,
+                  maxLines: 3,
 
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: TextField(
+
                   controller: _email,
                   readOnly: true,
                   cursorColor: mainColor,
@@ -122,11 +164,7 @@ class Profile extends StatelessWidget {
                   textAlign: TextAlign.left,
 
                   decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.edit,color: mainColor,),
-                          onPressed: () {
-                          }),
+
                       enabled: true,
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -159,11 +197,6 @@ class Profile extends StatelessWidget {
                   textAlign: TextAlign.left,
 
                   decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.edit,color: mainColor,),
-                          onPressed: () {
-                          }),
                       enabled: true,
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -187,6 +220,7 @@ class Profile extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 15),
                 child: TextField(
+
                   controller: _password,
                   readOnly: true,
                   cursorColor: mainColor,
@@ -196,11 +230,7 @@ class Profile extends StatelessWidget {
                   textAlign: TextAlign.left,
 
                   decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          icon: Icon(
-                            Icons.edit,color: mainColor,),
-                          onPressed: () {
-                          }),
+
                       enabled: true,
                       focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wathaequi/view_models/login_vm.dart';
 import 'package:wathaequi/views/3-dash.dart';
+import 'package:wathaequi/views/8-forgot.dart';
 import 'package:wathaequi/views/res/colors.dart';
 
 class Login extends StatefulWidget {
@@ -59,6 +60,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       keyboardType: TextInputType.number,
+                      maxLength: 18,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "must login with nin";
@@ -141,7 +143,7 @@ class _LoginState extends State<Login> {
                         );
                         String token = await viewModel.login(nin, password);
                         Navigator.pop(context);
-                        if(token !="wrong email or password" && token !="try again") {Navigator.push(
+                        if(token !="wrong email or password" && token !="error connecting") {Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
@@ -170,9 +172,11 @@ class _LoginState extends State<Login> {
 
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),
-                                              child: const Text(
-                                                  'try again',
+                                              child:  Text(
+                                                  "return",
                                                   style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+
                                                     fontSize: 15,
                                                       color: mainColor)),
                                             ))
@@ -220,9 +224,9 @@ class _LoginState extends State<Login> {
                   child: Center(
                       child: GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(builder: (context) => Documents()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ForgotPassword()));
                           },
                           child: Text(
                             "Forgot Password?",

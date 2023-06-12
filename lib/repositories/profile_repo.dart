@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wathaequi/views/res/colors.dart';
 
 import '../models/Citizen.dart';
 
@@ -24,7 +25,7 @@ class ProfileRepo{
 
     try {
 
-      Response response =  await dio.get("http://192.168.197.208:7778/auth/users/profile/$nin");
+      Response response =  await dio.get("$baseUrl/auth/users/profile/$nin");
 
       if (response.statusCode ==200) {
         citizen.fromJson(response.data);
@@ -36,6 +37,8 @@ class ProfileRepo{
       print(e);
     }
   }
+
+
 
 
 

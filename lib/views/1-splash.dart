@@ -13,9 +13,6 @@ class SplashScreen extends StatelessWidget {
 
     return AnimatedSplashScreen(
       splashIconSize: MediaQuery.of(context).size.width*0.5,
-
-
-      duration: 6000,
       nextScreen: Login(),
       splashTransition: SplashTransition.slideTransition,
 

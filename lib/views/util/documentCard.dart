@@ -27,8 +27,8 @@ class DocCard extends StatelessWidget {
             title: Text(paper.name,style: TextStyle(color: darkColor,fontSize: 18),),
 
             subtitle: Text('expire in: ${paper.expiration.year}/${paper.expiration.month}/${paper.expiration.day}',style: TextStyle(color: darkColor.withOpacity(0.8),fontSize: 16),),
-            leading: Icon(paper.type=="simple"?Icons.contact_page_rounded:Icons.folder,color: mainColor,size: 40,),
             onTap: ()async {
+              if(paper.type=="simple"){
               Directory? appDocDir = await getExternalStorageDirectory();
               String appDocPath = appDocDir!.path;
 
@@ -46,7 +46,7 @@ class DocCard extends StatelessWidget {
                     content: Text('Error'),
                   ),
                 );}else{
-                OpenFile.open(filepath);}
+                OpenFile.open(filepath);}}
 
 
             },

@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wathaequi/models/Citizen.dart';
 import 'package:wathaequi/view_models/document_vm.dart';
 import 'package:wathaequi/view_models/profile_vm.dart';
@@ -22,6 +24,7 @@ class _HomeState extends State<Home> {
   final ProfileViewModel _profileViewModel = ProfileViewModel();
   final DocViewModel _docViewModel = DocViewModel();
   List<Paper> papers = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +54,11 @@ class _HomeState extends State<Home> {
                       builder: ((BuildContext context,
                           AsyncSnapshot<Citizen> snapshot) {
                         if (snapshot.hasError) {
-                          return Text(
-                            'Error: ${snapshot.error}',
-                            style: TextStyle(color: Colors.white),
+                          return Center(
+                            child: Text(
+                              'Error: ${snapshot.error}',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           );
                         } else if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -67,11 +72,13 @@ class _HomeState extends State<Home> {
                             ),
                           );
                         } else if (!snapshot.hasData) {
-                          return Text('No profile found',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25));
+                          return Center(
+                            child: Text('No profile found',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25)),
+                          );
                         } else {
                           Citizen citizen = snapshot.data!;
 
@@ -106,12 +113,28 @@ class _HomeState extends State<Home> {
                                 ),
                               )),
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async{
+                                  String phone = "";
+                                  final SharedPreferences cashe = await SharedPreferences.getInstance();
+                                  final String token = cashe.getString("token")!;
+
+                                  try{
+                                    Dio dio = Dio();
+                                    dio.options.headers['Authorization'] = 'Bearer $token';
+                                    Response response = await dio.get("$baseUrl/sms/api/v1/checkUser/${citizen.nin}");
+                                    if(response.statusCode==200){
+                                      phone= response.data!;
+                                    }
+
+                                  }catch(e){
+                                    print(e);
+                                  }
+
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              Profile(citizen: citizen)));
+                                              Profile(citizen: citizen,phone: phone,)));
                                 },
                                 child: Center(
                                   child: Text(
@@ -187,20 +210,26 @@ class _HomeState extends State<Home> {
                           style: TextStyle(color: darkColor, fontSize: 20)),
                     );
                   }
+                  if (snapshot.hasData) {
+                    papers = snapshot.data!;
 
-                  papers = snapshot.data ?? [];
-
-                  return Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        return DocCard(
-                          paper: papers[index],
-                          docViewModel: _docViewModel,
-                        );
-                      },
-                      itemCount: papers.length,
-                    ),
-                  );
+                    return Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          return DocCard(
+                            paper: papers[index],
+                            docViewModel: _docViewModel,
+                          );
+                        },
+                        itemCount: papers.length,
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text('No documents yet',
+                          style: TextStyle(color: darkColor, fontSize: 20)),
+                    );
+                  }
                 })
           ],
         ),

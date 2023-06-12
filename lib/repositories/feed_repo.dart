@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wathaequi/models/Post.dart';
+import 'package:wathaequi/views/res/colors.dart';
 
 class FeedRepo{
   String name = '';
@@ -31,7 +32,7 @@ class FeedRepo{
       });
 
       var response = await dio.post(
-        'http://192.168.197.208:7778/forum/ms-participation-citoyen/publications',
+        '$baseUrl/forum/ms-participation-citoyen/publications',
         data: formData,
       );
 
@@ -61,7 +62,7 @@ class FeedRepo{
 
     try {
       Response response = await dio
-          .get("localhost:7778/forum/ms-participation-citoyen/citizen/$nin/signalements");
+          .get("$baseUrl/forum/ms-participation-citoyen/citizen/$nin/signalements");
       List<Post> posts = [];
 
       if (response.statusCode == 200) {

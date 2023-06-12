@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:wathaequi/views/res/colors.dart';
 
@@ -12,13 +15,11 @@ class PostView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 10,
       shadowColor: Colors.black.withOpacity(0.25),
       borderOnForeground: true,
       shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: darkColor,
-          width: 1.0,
-        ),
+
         borderRadius: BorderRadius.circular(15)),
       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Padding(
@@ -30,6 +31,7 @@ class PostView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CircleAvatar(
                       backgroundColor: mainColor,
@@ -39,23 +41,36 @@ class PostView extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          post.fullNameCitizen!,
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              post.fullNameCitizen!,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 4,),
+                            Text(
+                              post.datePublication!.substring(0,10),
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 4.0),
+                        SizedBox(height: 2,),
+
                         Text(
-                          post.datePublication!,
+                          post.wilaya!+", "+post.commune!,
                           style: TextStyle(
                             fontSize: 12.0,
-                            color: Colors.grey[600],
+                            color: mainColor,
                           ),
                         ),
                       ],
                     ),
+
 
                   ],
                 ),
@@ -84,30 +99,38 @@ class PostView extends StatelessWidget {
             SizedBox(height: 16.0),
             Text(
               post.content!,
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 10.0),
 
-            Image.network("https://images.theconversation.com/files/233448/original/file-20180824-149463-1hzm435.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1200&h=1200.0&fit=crop")
-            ,
+            Image.memory(
+              Uint8List.fromList(base64.decode(post.picture!)),
+              fit: BoxFit.cover,
+            ),
             SizedBox(height: 8,),
             Text(
               'Replies',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
-            reply!=""?
-            Container(
-              width: double.infinity,
-              child: Center(child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(reply,style: TextStyle(color: darkColor,fontSize: 16),),
-              )),
-              decoration: BoxDecoration(
-                color: accentColor,
-                borderRadius: BorderRadius.circular(5)
-              ),
-            ):Container(),
+            post.reponces!.isNotEmpty?
+            ListView.builder(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                  margin: EdgeInsets.only(top: 4),
+                  child: Text(post.reponces![index].content!,style: TextStyle(color: Colors.white),),
+                  decoration: BoxDecoration(
+
+                      color: mainColor,
+                      borderRadius: BorderRadius.circular(5)
+                  ),
+                );
+              },
+              itemCount: post.reponces!.length,
+            ):Container()
+
           ],
         ),
       ),

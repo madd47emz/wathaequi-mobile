@@ -46,7 +46,7 @@ class _DashState extends State<Dash> {
               icon: Icons.home,
               text: "Home",
             ),
-            GButton(icon: Icons.forum, text: "Forum"),
+            GButton(icon: Icons.report_problem, text: "Report"),
             GButton(icon: Icons.location_pin, text: "Find"),
           ]),
     );

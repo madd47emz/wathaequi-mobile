@@ -53,6 +53,10 @@ class _CreatePostState extends State<CreatePost> {
       setState(() {
         currentStep--; //currentStep-=1;
       });
+
+    }
+    if(currentStep<=0){
+      Navigator.pop(context);
     }
   }
 
@@ -101,221 +105,226 @@ class _CreatePostState extends State<CreatePost> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: Stepper(
-        elevation: 0,
-        controlsBuilder: controlBuilders,
-        type: StepperType.horizontal,
-        physics: const ScrollPhysics(),
-        onStepTapped: onStepTapped,
-        onStepContinue: continueStep,
-        onStepCancel: cancelStep,
-        currentStep: currentStep,
-        steps: [
-          Step(
-            title: Text("Add image"),
-            content: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  if (_imageFile != null)
+      body: Theme(
+        data: ThemeData(
+          colorScheme: Theme.of(context).colorScheme.copyWith(primary: Colors.red),
+        ),
+        child: Stepper(
+          elevation: 0,
+          controlsBuilder: controlBuilders,
+          type: StepperType.horizontal,
+          physics: const ScrollPhysics(),
+          onStepTapped: onStepTapped,
+          onStepContinue: continueStep,
+          onStepCancel: cancelStep,
+          currentStep: currentStep,
+          steps: [
+            Step(
+              title: Text("Add image"),
+              content: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    if (_imageFile != null)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.file(_imageFile),
+                      ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.file(_imageFile),
-                    ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: darkColor, // Background color
-                        ),
-                        onPressed: () => _getImage(ImageSource.camera),
-                        child: Icon(
-                          Icons.camera_alt,
-                          size: 50,
-                        )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: darkColor, // Background color
-                        ),
-                        onPressed: () => _getImage(ImageSource.gallery),
-                        child: Icon(
-                          Icons.folder_copy,
-                          size: 50,
-                        )),
-                  ),
-                ],
-              ),
-            ),
-            isActive: currentStep >= 0,
-            state: currentStep >= 0 && _imageFile != ''
-                ? StepState.complete
-                : StepState.disabled,
-          ),
-          Step(
-            title: Text("Add details"),
-            content: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      cursorColor: mainColor,
-                      style: const TextStyle(color: darkColor, fontSize: 15),
-                      textAlign: TextAlign.start,
-                      decoration: InputDecoration(
-                          enabled: true,
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: mainColor),
-                              borderRadius: BorderRadius.circular(15)),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: darkColor.withOpacity(0.5)),
-                              borderRadius: BorderRadius.circular(15)),
-                          hintText: 'Describe your problem',
-                          hintStyle: TextStyle(
-                            color: darkColor.withOpacity(0.5),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, // Background color
+                          ),
+                          onPressed: () => _getImage(ImageSource.camera),
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 50,
                           )),
-                      maxLines: 5,
-                      onChanged: (value) {
-                        setState(() {
-                          _content = value;
-                        });
-                      },
                     ),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, // Background color
+                          ),
+                          onPressed: () => _getImage(ImageSource.gallery),
+                          child: Icon(
+                            Icons.folder_copy,
+                            size: 50,
+                          )),
+                    ),
+                  ],
+                ),
               ),
+              isActive: currentStep >= 0,
+              state: currentStep >= 0 && _imageFile != ''
+                  ? StepState.complete
+                  : StepState.disabled,
             ),
-            isActive: currentStep >= 0,
-            state: currentStep >= 1 ? StepState.complete : StepState.disabled,
-          ),
-          Step(
-            title: Text("Pin location"),
-            content: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    _locationMessage,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: darkColor, fontSize: 20,),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 50),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red, // Background color
-                        ),
-                        onPressed: () async {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    CircularProgressIndicator(color: Colors.white,),
-                                    SizedBox(height: 16),
-                                    Text(
-                                      'Getting your address....',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+            Step(
+              title: Text("Add details"),
+              content: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextField(
+                        cursorColor: Colors.red,
+                        style: const TextStyle(color: darkColor, fontSize: 15),
+                        textAlign: TextAlign.start,
+                        decoration: InputDecoration(
+                            enabled: true,
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                                borderRadius: BorderRadius.circular(15)),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: darkColor.withOpacity(0.5)),
+                                borderRadius: BorderRadius.circular(15)),
+                            hintText: 'Describe your problem',
+                            hintStyle: TextStyle(
+                              color: darkColor.withOpacity(0.5),
+                            )),
+                        maxLines: 5,
+                        onChanged: (value) {
+                          setState(() {
+                            _content = value;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              isActive: currentStep >= 0,
+              state: currentStep >= 1 ? StepState.complete : StepState.disabled,
+            ),
+            Step(
+              title: Text("Pin location"),
+              content: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      _locationMessage,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: darkColor, fontSize: 20,),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 50),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red, // Background color
+                          ),
+                          onPressed: () async {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 0,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(color: Colors.white,),
+                                      SizedBox(height: 16),
+                                      Text(
+                                        'Getting your address....',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
-                          LocationPermission permission =
-                              await Geolocator.checkPermission();
-                          if (permission == LocationPermission.denied) {
-                            permission = await Geolocator.requestPermission();
-                            if (permission ==
-                                LocationPermission.deniedForever) {
-                              setState(() {
-                                _locationMessage =
-                                    'Location permissions are permanently denied, we cannot request permissions.';
-                              });
-                            } else if (permission ==
-                                LocationPermission.denied) {
-                              setState(() {
-                                _locationMessage =
-                                    'Location permissions are denied, please enable permissions.';
-                              });
-                            }
-                          }
-
-                          if (permission == LocationPermission.always ||
-                              permission == LocationPermission.whileInUse) {
-                            try {
-
-                              final GeolocatorPlatform geolocator =
-                                  GeolocatorPlatform.instance;
-                              Position position =
-                                  await geolocator.getCurrentPosition(
-                                      locationSettings: LocationSettings());
-                              List<Placemark> placemarks =
-                                  await placemarkFromCoordinates(
-                                position.latitude,
-                                position.longitude,
-                              );
-                              Navigator.pop(context);
-
-
-                              if (placemarks != null && placemarks.isNotEmpty) {
-                                Placemark placemark = placemarks[0];
-                                String address = placemark.street! +
-                                    ", " +
-                                    placemark.administrativeArea! +
-                                    ", " +
-                                    placemark.subAdministrativeArea!;
-
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                            LocationPermission permission =
+                                await Geolocator.checkPermission();
+                            if (permission == LocationPermission.denied) {
+                              permission = await Geolocator.requestPermission();
+                              if (permission ==
+                                  LocationPermission.deniedForever) {
                                 setState(() {
-                                  _wilaya = placemark.administrativeArea!;
-                                  _commune = placemark.subAdministrativeArea!;
-
-                                  _locationMessage = address;
+                                  _locationMessage =
+                                      'Location permissions are permanently denied, we cannot request permissions.';
+                                });
+                              } else if (permission ==
+                                  LocationPermission.denied) {
+                                setState(() {
+                                  _locationMessage =
+                                      'Location permissions are denied, please enable permissions.';
                                 });
                               }
-                            } catch (e) {
-                              print(e);
-                              setState(() {
-                                _locationMessage =
-                                    'Error getting location: ${e.toString()}';
-                              });
                             }
-                          }
-                        },
-                        child: Icon(
-                          Icons.location_pin,
-                          size: 50,
-                          color: Colors.white,
-                        )),
-                  ),
-                ],
+
+                            if (permission == LocationPermission.always ||
+                                permission == LocationPermission.whileInUse) {
+                              try {
+
+                                final GeolocatorPlatform geolocator =
+                                    GeolocatorPlatform.instance;
+                                Position position =
+                                    await geolocator.getCurrentPosition(
+                                        locationSettings: LocationSettings());
+                                List<Placemark> placemarks =
+                                    await placemarkFromCoordinates(
+                                  position.latitude,
+                                  position.longitude,
+                                );
+                                Navigator.pop(context);
+
+
+                                if (placemarks != null && placemarks.isNotEmpty) {
+                                  Placemark placemark = placemarks[0];
+                                  String address = placemark.street! +
+                                      ", " +
+                                      placemark.administrativeArea! +
+                                      ", " +
+                                      placemark.subAdministrativeArea!;
+
+                                  setState(() {
+                                    _wilaya = placemark.administrativeArea!;
+                                    _commune = placemark.subAdministrativeArea!;
+
+                                    _locationMessage = address;
+                                  });
+                                }
+                              } catch (e) {
+                                print(e);
+                                setState(() {
+                                  _locationMessage =
+                                      'Error getting location: ${e.toString()}';
+                                });
+                              }
+                            }
+                          },
+                          child: Icon(
+                            Icons.location_pin,
+                            size: 50,
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
               ),
+              isActive: currentStep >= 0,
+              state: currentStep >= 2 ? StepState.complete : StepState.disabled,
             ),
-            isActive: currentStep >= 0,
-            state: currentStep >= 2 ? StepState.complete : StepState.disabled,
-          ),
-        ],
+          ],
+        ),
       ),
     ));
   }

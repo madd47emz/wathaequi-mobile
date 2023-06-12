@@ -15,31 +15,31 @@ class Feeds extends StatefulWidget {
 }
 
 class _FeedsState extends State<Feeds> {
-  final FeedViewModel _model  = FeedViewModel();
+  final FeedViewModel _model = FeedViewModel();
   List<Post> posts = [];
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CreatePost(),
-        ),
-      );
-      if (result != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("$result"),
-            duration: Duration(seconds: 3),
-          ),
-        );
-          }},
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CreatePost(),
+              ),
+            );
+            if (result != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("$result"),
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          },
           backgroundColor: mainColor,
           child: Icon(Icons.add),
         ),
@@ -47,9 +47,9 @@ class _FeedsState extends State<Feeds> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36,vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 20),
               child: Text(
-                "Feeds",
+                "My City Reports",
                 style: TextStyle(
                     color: darkColor,
                     fontWeight: FontWeight.bold,
@@ -74,18 +74,24 @@ class _FeedsState extends State<Feeds> {
                           style: TextStyle(color: darkColor, fontSize: 20)),
                     );
                   }
+                  posts = snapshot.data!;
+                  if (posts.isNotEmpty) {
 
-                  posts = snapshot.data ?? [];
 
-                  return Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-
-                        return PostView(posts[index]),
-                      },
-                      itemCount: posts.length,
-                    ),
-                  );
+                    return Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          return PostView(post: posts[index]);
+                        },
+                        itemCount: posts.length,
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text('create signalements',
+                          style: TextStyle(color: darkColor, fontSize: 20)),
+                    );
+                  }
                 })
           ],
         ),
