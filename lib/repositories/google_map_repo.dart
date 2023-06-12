@@ -4,7 +4,7 @@ import '../models/Nearby.dart';
 
 class MapRepo{
   Future<NearbyPlacesResponse?> getNearbyPlaces(double long, double lat) async {
-    String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$long,$lat&radius=10000&type=city_hall&key=AIzaSyDjx8L9TW6keKkHg64cczM9hNECQ8b_tcc";
+    String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$long,$lat&radius=10000&type=city_hall&key=YOUR_KEY";
     print(url);
 
     Dio dio = Dio();
